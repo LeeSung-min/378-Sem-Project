@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PixelVault Games{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="origin-ribbon legit">🔒 Real site &middot; {{ origin_label }}</div>
+  <header class="nav">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="logo">◆</span> PixelVault<span class="brand-accent">Games</span>
+    </a>
+    <nav>
+      <a href="{{ url_for('index') }}">Store</a>
+      <a href="{{ url_for('product', slug='gta-vi') }}">GTA VI</a>
+      <a href="{{ url_for('cart') }}">Cart</a>
+      {% if current_user %}
+        <a href="{{ url_for('account') }}">Account</a>
+        <form class="inline" method="post" action="{{ url_for('logout') }}">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <button class="link-btn" type="submit">Log out</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a class="btn-sm" href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap">
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <footer>
+    <p>PixelVault Games is a fictional store built for a cybersecurity class
+       demonstration. No real products, payments, or companies are involved.</p>
+  </footer>
+</body>
+</html>

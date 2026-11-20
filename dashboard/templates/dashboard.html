@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Comparison Dashboard</title>
+  <style>
+    :root { --bg:#0e1016; --panel:#171a24; --text:#e8eaf0; --muted:#9aa0b0;
+      --legit:#43d17a; --spoof:#ff9d2e; --line:#262a38; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg);
+      color:var(--text); }
+    header { padding:20px 24px; background:var(--panel); border-bottom:1px solid var(--line); }
+    header h1 { margin:0 0 4px; font-size:22px; }
+    header p { margin:0; color:var(--muted); font-size:14px; }
+    main { max-width:1100px; margin:0 auto; padding:24px 20px 60px; }
+    h2 { margin:28px 0 12px; }
+    table { width:100%; border-collapse:collapse; background:var(--panel);
+      border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);
+      font-size:14px; }
+    th { background:#1f2330; color:var(--muted); font-weight:600; }
+    tr:last-child td { border-bottom:none; }
+    .cols { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .tag { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px;
+      font-weight:700; }
+    .tag.legit { background:#11351f; color:#8ff0bf; }
+    .tag.spoof { background:#3a2410; color:#ffd9a8; }
+    .tag.get { background:#1a2a3a; color:#9fd0ff; }
+    .tag.post { background:#2a1a3a; color:#d9b3ff; }
+    .ok { color:var(--legit); } .warn { color:var(--spoof); }
+    code { background:#22283a; padding:1px 6px; border-radius:6px; }
+    .note { color:var(--muted); font-size:13px; margin-top:8px; }
+    .empty { color:var(--muted); font-style:italic; padding:12px; }
+    .cmp td:nth-child(2) { color:#bfeecf; } .cmp td:nth-child(3) { color:#ffd9a8; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛡️ Security Comparison Dashboard</h1>
+    <p>Live events from two different origins. No passwords, tokens, or visitor
+       identities are shown — they were never recorded.</p>
+  </header>
+  <main>
+    <h2>Property comparison</h2>
+    <table class="cmp">
+      <tr><th>Property</th>
+          <th><span class="tag legit">Legit</span> {{ legit_origin }}</th>
+          <th><span class="tag spoof">Spoof</span> {{ spoof_origin }}</th></tr>
+      {% for label, a, b in comparison %}
+        <tr><td>{{ label }}</td><td>{{ a }}</td><td>{{ b }}</td></tr>
+      {% endfor %}
+    </table>
+
+    <div class="cols">
+      <div>
+        <h2><span class="tag legit">Legit</span> login events</h2>
+        {% if legit %}
+        <table>
+          <tr><th>Time (UTC)</th><th>Method</th><th>Email tried</th><th>Outcome</th></tr>
+          {% for e in legit %}
+          <tr>
+            <td>{{ e.ts }}</td>
+            <td><span class="tag {{ e.method|lower }}">{{ e.method }}</span></td>
+            <td>{{ e.email_tried or "—" }}</td>
+            <td class="{{ 'ok' if e.outcome == 'success' else '' }}">{{ e.outcome }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% else %}
+        <p class="empty">No events yet. Try logging in on the legit site.</p>
+        {% endif %}
+        <p class="note">Email is shown for the demo; it is not secret. Passwords and
+           session cookies are never logged.</p>
+      </div>
+
+      <div>
+        <h2><span class="tag spoof">Spoof</span> simulation events</h2>
+        {% if spoof %}
+        <table>
+          <tr><th>Time (UTC)</th><th>Method</th><th>Origin</th><th>Outcome</th></tr>
+          {% for e in spoof %}
+          <tr>
+            <td>{{ e.ts }}</td>
+            <td><span class="tag {{ e.method|lower }}">{{ e.method }}</span></td>
+            <td>{{ e.origin }}</td>
+            <td class="warn">{{ e.outcome }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% else %}
+        <p class="empty">No events yet. Try the mock login on the spoof site.</p>
+        {% endif %}
+        <p class="note">Notice there is no "email tried" or "password" column here —
+           the spoof logger has no field for either.</p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

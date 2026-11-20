@@ -1,0 +1,14 @@
+# Local databases (may contain test login records)
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Python generated files
+__pycache__/
+*.pyc
+.venv/
+venv/

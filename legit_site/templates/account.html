@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Account — PixelVault Games{% endblock %}
+{% block content %}
+<section class="narrow">
+  <h1>Welcome back</h1>
+  <p>You are signed in as <strong>{{ email }}</strong>.</p>
+  <div class="panel">
+    <h3>This is a protected page</h3>
+    <p>You can only see this because the server checked your session cookie. If you
+       log out or clear the cookie, the server sends you back to the login page.</p>
+  </div>
+  <div class="panel">
+    <h3>Library</h3>
+    <p>{{ product.title }} <span class="muted">(demo entitlement)</span></p>
+  </div>
+  <form class="inline" method="post" action="{{ url_for('logout') }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <button class="btn" type="submit">Log out</button>
+  </form>
+</section>
+{% endblock %}

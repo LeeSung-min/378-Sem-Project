@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Sign in — PixelVault Games{% endblock %}
+{% block content %}
+<section class="auth">
+  <h1>Sign in</h1>
+  <p class="muted">Use a seeded demo account, or one you registered.</p>
+
+  <!--
+    Standard semantic form: method="post", <input type="email" autocomplete>,
+    <input type="password" autocomplete="current-password">. This is what lets a
+    browser password manager recognize the login, offer to save it, and later
+    autofill it — but ONLY on this origin (127.0.0.1:5000). That origin binding is
+    the key defense the spoof site cannot borrow.
+  -->
+  <form method="post" action="{{ url_for('login') }}" autocomplete="on">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label>Email
+      <input type="email" name="email" autocomplete="username" required>
+    </label>
+    <label>Password
+      <input type="password" name="password" autocomplete="current-password" required>
+    </label>
+    <button class="btn" type="submit">Sign in</button>
+  </form>
+  <p>No account? <a href="{{ url_for('register') }}">Register</a></p>
+</section>
+{% endblock %}

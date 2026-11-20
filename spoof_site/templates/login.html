@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sign in — PixelVault Games{% endblock %}
+{% block content %}
+<section class="auth">
+  <h1>Sign in</h1>
+  <p class="muted">Welcome back. Sign in to your {{ product.title }} account.</p>
+
+  <!--
+    This form POSTs to THIS origin (127.0.0.1:5001), not the real store. A browser
+    password manager that saved credentials on the real site (127.0.0.1:5000) will
+    NOT offer to autofill them here, because the origin is different. That silence
+    is a real-world warning sign.
+    The server discards whatever is typed and shows an educational reveal.
+  -->
+  <form method="post" action="{{ url_for('login') }}" autocomplete="on">
+    <label>Email
+      <input type="email" name="email" autocomplete="username"
+             placeholder="{{ demo_email }}" required>
+    </label>
+    <label>Password
+      <input type="password" name="password" autocomplete="current-password" required>
+    </label>
+    <button class="btn" type="submit">Sign in</button>
+  </form>
+
+  <p>New here? <a href="{{ url_for('signup') }}">Create an account</a> to claim the
+     launch discount.</p>
+  <p class="sim-inline">For the demo you can type the designated test value
+     <code>{{ demo_email }}</code> and any password — nothing you enter is stored.</p>
+</section>
+{% endblock %}

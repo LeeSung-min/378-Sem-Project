@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Social-engineering element #1: urgency banner -->
+<div class="promo-banner">
+  🔥 FLASH SALE — {{ product.title }} just <strong>{{ product.deal_price }}</strong>
+  (was {{ product.price }}) &middot; ends in <span id="countdown">05:00</span>
+</div>
+
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow deal">Limited-time member price</p>
+    <h1>{{ product.title }}</h1>
+    <p class="lead">New accounts unlock the exclusive <strong>{{ product.deal_price }}</strong>
+       launch-week price. Offer ends soon!</p>
+    <a class="btn" href="{{ url_for('signup') }}">Create account &amp; claim deal</a>
+  </div>
+  <div class="hero-art art-cover" aria-hidden="true"><span>{{ product.title }}</span></div>
+</section>
+
+<h2 class="section-title">Hot deals</h2>
+<div class="grid">
+  <article class="card deal-card">
+    <div class="art-thumb a0" aria-hidden="true"></div>
+    <div class="card-body">
+      <h3>{{ product.title }}</h3>
+      <p><span class="old">{{ product.price }}</span>
+         <span class="now">{{ product.deal_price }}</span></p>
+      <a class="btn-sm" href="{{ url_for('signup') }}">Claim</a>
+    </div>
+  </article>
+  {% for n in range(1, 6) %}
+  <article class="card">
+    <div class="art-thumb a{{ n % 4 }}" aria-hidden="true"></div>
+    <div class="card-body">
+      <h3>Placeholder Title {{ n }}</h3>
+      <p class="muted">$49.99</p>
+      <span class="btn-sm disabled">Demo item</span>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<!-- Social-engineering element #2: discount popup (shown via JS on first load) -->
+<div id="popup" class="popup-overlay">
+  <div class="popup">
+    <h2>🎁 You unlocked a deal!</h2>
+    <p>New members get {{ product.title }} for just <strong>{{ product.deal_price }}</strong>.
+       Create your account in the next few minutes to lock in the price.</p>
+    <a class="btn" href="{{ url_for('signup') }}">Claim my discount</a>
+    <button type="button" id="popup-close" class="link-btn">No thanks</button>
+    <p class="popup-note">(This popup is part of the educational simulation — it
+       demonstrates how urgency and "exclusive" discounts pressure a visitor.)</p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Cart — PixelVault Games{% endblock %}
+{% block content %}
+<section class="narrow">
+  <h1>Your cart</h1>
+  <div class="cart-row">
+    <div class="art-thumb a0" aria-hidden="true"></div>
+    <div class="cart-item">
+      <h3>{{ product.title }}</h3>
+      <p class="muted">{{ product.price }}</p>
+    </div>
+  </div>
+  <p class="total">Total: {{ product.price }} <span class="muted">(demonstration — no checkout)</span></p>
+  {% if current_user %}
+    <a class="btn" href="{{ url_for('account') }}">Go to account</a>
+  {% else %}
+    <p>Please <a href="{{ url_for('login') }}">log in</a> to check out.</p>
+  {% endif %}
+</section>
+{% endblock %}

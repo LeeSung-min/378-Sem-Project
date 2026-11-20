@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">Now available for pre-order</p>
+    <h1>{{ product.title }}</h1>
+    <p class="lead">{{ product.tagline }}</p>
+    <a class="btn" href="{{ url_for('product', slug=product.slug) }}">View game</a>
+  </div>
+  <div class="hero-art art-cover" aria-hidden="true">
+    <span>{{ product.title }}</span>
+  </div>
+</section>
+
+<h2 class="section-title">Featured</h2>
+<div class="grid">
+  {% for n in range(6) %}
+  <article class="card">
+    <div class="art-thumb a{{ n % 4 }}" aria-hidden="true"></div>
+    <div class="card-body">
+      <h3>{{ product.title if n == 0 else "Placeholder Title " ~ n }}</h3>
+      <p class="muted">{{ product.price if n == 0 else "$49.99" }}</p>
+      {% if n == 0 %}
+        <a class="btn-sm" href="{{ url_for('product', slug=product.slug) }}">Details</a>
+      {% else %}
+        <span class="btn-sm disabled">Demo item</span>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

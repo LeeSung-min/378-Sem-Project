@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Register — PixelVault Games{% endblock %}
+{% block content %}
+<section class="auth">
+  <h1>Create an account</h1>
+  <form method="post" action="{{ url_for('register') }}" autocomplete="on">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label>Email
+      <input type="email" name="email" autocomplete="username" required>
+    </label>
+    <label>Password (8+ characters)
+      <input type="password" name="password" autocomplete="new-password" required>
+    </label>
+    <button class="btn" type="submit">Register</button>
+  </form>
+  <p class="muted">Your password is hashed with Werkzeug before storage. The plaintext
+     is never written to the database.</p>
+</section>
+{% endblock %}
