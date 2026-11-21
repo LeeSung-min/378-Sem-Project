@@ -5,27 +5,29 @@ servers running and the dashboard open in a second tab before you start.
 
 ## Part 1 — The real store (≈2 min)
 
-1. Open `http://127.0.0.1:5000`. Point out the green "Real site" ribbon and the
-   address bar.
-2. Go to **Login**. Sign in with `demo@pixelvault.test` / `Demo-Pass-123`.
-3. Land on the protected **Account** page. Say: "The server only shows this because
-   it checked my session cookie."
-4. If your browser offered to save the password, accept it. You'll use this in Part 3.
-5. Open the **dashboard** tab (`:5002`) and show the new `success` row under
-   "Legit login events." Note: no password column anywhere.
+1. Open `http://127.0.0.1:5000` and the address bar.
+2. Browse the catalog, open a game, **Add to cart** a couple of items — show the cart
+   count update and the cart totals. Say: "This is real, session-backed state."
+3. Go to **Login**. Sign in with `demo@pixelvault.test` / `Demo-Pass-123`.
+4. Land on the protected **Account** page (your cart carried over). Say: "The server
+   only shows this because it checked my session cookie."
+5. If your browser offered to save the password, accept it. You'll use this in Part 3.
+6. Open the **dashboard** tab (`:5002`) and show the new `success` row in the real
+   authentication log. Note: no password column anywhere.
 
 ## Part 2 — The spoof (≈3 min)
 
-1. Open `http://127.0.0.1:5001`. Keep the educational banner visible, but focus the
-   audience on how similar the store looks.
+1. Open `http://127.0.0.1:5001`. It looks like the same store. The only tell is the
+   quiet one-line notice at the very top (and the address bar).
 2. Point out the **social-engineering** elements: the countdown timer, the "flash
    sale" price, the popup. Say: "These exist to rush you past your normal checks."
-3. Click **Claim discount** → the mock login page.
-4. Type the demo email `participant@demo.test` and any password. Submit.
-5. The **reveal** page appears. Walk through it: the submission hit `:5001`, the
-   password was discarded, only a non-sensitive event was logged.
-6. Back on the **dashboard**, show the new "Spoof simulation events" row — and point
-   out there is literally no column for an email or a password.
+3. Click **Claim discount** → the signup page. Type any email and password, submit.
+4. It just fails: "Invalid email or password." / a generic error. Say: "A real
+   phishing page would behave exactly like this dead end — the difference is that a
+   real one keeps what you typed. Ours discards it and logs only that a submission
+   happened." (The **About this demonstration** link explains the spoof-vs-real point.)
+5. Back on the **dashboard**, show the new row in the spoof log — and point out there
+   is literally no column for an email or a password.
 
 ## Part 3 — The defenses that actually work (≈3 min)
 

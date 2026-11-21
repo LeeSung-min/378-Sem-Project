@@ -15,7 +15,7 @@
     <nav>
       <a href="{{ url_for('index') }}">Store</a>
       <a href="{{ url_for('product', slug='gta-vi') }}">GTA VI</a>
-      <a href="{{ url_for('cart') }}">Cart</a>
+      <a href="{{ url_for('cart') }}">Cart{% if cart_count %} <span class="badge">{{ cart_count }}</span>{% endif %}</a>
       {% if current_user %}
         <a href="{{ url_for('account') }}">Account</a>
         <form class="inline" method="post" action="{{ url_for('logout') }}">

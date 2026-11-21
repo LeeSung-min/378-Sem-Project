@@ -10,8 +10,19 @@
        log out or clear the cookie, the server sends you back to the login page.</p>
   </div>
   <div class="panel">
-    <h3>Library</h3>
-    <p>{{ product.title }} <span class="muted">(demo entitlement)</span></p>
+    <h3>Your cart</h3>
+    {% if items %}
+      <ul class="account-cart">
+        {% for item in items %}
+          <li>{{ item.game.title }}
+            {% if item.qty > 1 %}&times; {{ item.qty }}{% endif %}
+            <span class="muted">${{ "%.2f"|format(item.subtotal) }}</span></li>
+        {% endfor %}
+      </ul>
+      <p class="muted">Total: ${{ "%.2f"|format(total) }} (demo — no real checkout)</p>
+    {% else %}
+      <p class="muted">Your cart is empty. <a href="{{ url_for('index') }}">Browse games</a>.</p>
+    {% endif %}
   </div>
   <form class="inline" method="post" action="{{ url_for('logout') }}">
     <input type="hidden" name="_csrf" value="{{ csrf_token() }}">

@@ -42,8 +42,8 @@ ad) that lures victims to it. We built a spoofed site for study and intentionall
 not create or send any lure, since that would be a real attack on real people.
 
 **Q: Could this be used maliciously?**
-Not as built. It has no credential capture, runs only on localhost, is self-revealing,
-and uses fictional branding. To be an attack it would need credential storage/relay, a
+Not as built. It has no credential capture, runs only on localhost, carries a visible
+educational notice (and an About page), and uses fictional branding. To be an attack it would need credential storage/relay, a
 convincing real-brand clone, a lure, and public deployment — all of which we
 deliberately left out (and which the assignment forbids without written permission).
 

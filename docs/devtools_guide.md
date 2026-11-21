@@ -30,8 +30,8 @@ GET/POST work, how Flask receives form submissions).
 2. Find the `login` request. Note the **Request URL host/port is `127.0.0.1:5001`** —
    a different origin from the real store. This is the single most important thing to
    point at.
-3. The response is a `302` to `/reveal`. No session cookie is set, because nothing
-   authenticated.
+3. The response renders the same form again with an "Invalid email or password."
+   error (HTTP 200). No session cookie is set, because nothing authenticated.
 
 ## Compare origins quickly
 

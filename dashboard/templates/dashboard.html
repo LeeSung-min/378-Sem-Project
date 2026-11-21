@@ -3,98 +3,156 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Auto-refresh every 10s so the live demo updates without manual reloads. -->
+  <meta http-equiv="refresh" content="10">
   <title>Security Comparison Dashboard</title>
   <style>
-    :root { --bg:#0e1016; --panel:#171a24; --text:#e8eaf0; --muted:#9aa0b0;
-      --legit:#43d17a; --spoof:#ff9d2e; --line:#262a38; }
+    :root { --bg:#0e1016; --panel:#171a24; --panel2:#1f2330; --text:#e8eaf0;
+      --muted:#9aa0b0; --good:#43d17a; --warn:#ff9d2e; --key:#7c5cff; --line:#262a38; }
     * { box-sizing: border-box; }
     body { margin:0; font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg);
-      color:var(--text); }
-    header { padding:20px 24px; background:var(--panel); border-bottom:1px solid var(--line); }
+      color:var(--text); line-height:1.5; }
+    header { padding:22px 24px; background:var(--panel); border-bottom:1px solid var(--line); }
     header h1 { margin:0 0 4px; font-size:22px; }
     header p { margin:0; color:var(--muted); font-size:14px; }
     main { max-width:1100px; margin:0 auto; padding:24px 20px 60px; }
-    h2 { margin:28px 0 12px; }
+    section { margin-bottom:34px; }
+    h2 { font-size:15px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted);
+      border-bottom:1px solid var(--line); padding-bottom:8px; margin:0 0 16px; }
+
+    /* Stat cards */
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+    .stat { background:var(--panel); border:1px solid var(--line); border-radius:14px;
+      padding:16px; border-top:3px solid var(--muted); }
+    .stat.good { border-top-color:var(--good); }
+    .stat.warn { border-top-color:var(--warn); }
+    .stat.key  { border-top-color:var(--key); }
+    .stat .num { font-size:34px; font-weight:800; line-height:1; }
+    .stat.good .num { color:var(--good); }
+    .stat.warn .num { color:var(--warn); }
+    .stat.key  .num { color:var(--key); }
+    .stat .lbl { font-weight:600; margin:8px 0 4px; font-size:14px; }
+    .stat .note { color:var(--muted); font-size:12.5px; }
+
+    /* Comparison table */
     table { width:100%; border-collapse:collapse; background:var(--panel);
       border:1px solid var(--line); border-radius:12px; overflow:hidden; }
-    th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);
+    th, td { text-align:left; padding:11px 13px; border-bottom:1px solid var(--line);
       font-size:14px; }
-    th { background:#1f2330; color:var(--muted); font-weight:600; }
+    th { background:var(--panel2); color:var(--muted); font-weight:600; }
     tr:last-child td { border-bottom:none; }
-    .cols { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .cmp td:first-child { color:var(--muted); }
+    .cmp td.legit { color:#bfeecf; } .cmp td.spoof { color:#ffd9a8; }
+
+    /* Event feeds */
+    .feeds { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
     .tag { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px;
       font-weight:700; }
     .tag.legit { background:#11351f; color:#8ff0bf; }
     .tag.spoof { background:#3a2410; color:#ffd9a8; }
     .tag.get { background:#1a2a3a; color:#9fd0ff; }
     .tag.post { background:#2a1a3a; color:#d9b3ff; }
-    .ok { color:var(--legit); } .warn { color:var(--spoof); }
-    code { background:#22283a; padding:1px 6px; border-radius:6px; }
-    .note { color:var(--muted); font-size:13px; margin-top:8px; }
+    .ok { color:var(--good); } .warn-t { color:var(--warn); }
     .empty { color:var(--muted); font-style:italic; padding:12px; }
-    .cmp td:nth-child(2) { color:#bfeecf; } .cmp td:nth-child(3) { color:#ffd9a8; }
+    .feed-note { color:var(--muted); font-size:12.5px; margin-top:8px; }
+
+    /* Takeaway */
+    .takeaway { background:#15121f; border:1px solid #2e2550; border-left:4px solid var(--key);
+      border-radius:12px; padding:16px 18px; }
+    .takeaway strong { color:#c9b8ff; }
+    code { background:#22283a; padding:1px 6px; border-radius:6px; }
+    .refresh { color:var(--muted); font-size:12px; }
+    @media (max-width:820px){ .stats{grid-template-columns:repeat(2,1fr)} .feeds{grid-template-columns:1fr} }
   </style>
 </head>
 <body>
   <header>
-    <h1>🛡️ Security Comparison Dashboard</h1>
-    <p>Live events from two different origins. No passwords, tokens, or visitor
-       identities are shown — they were never recorded.</p>
+    <h1>🛡️ Website Spoofing — Security Comparison Dashboard</h1>
+    <p>One real store and one look-alike, side by side. <span class="refresh">Auto-refreshes every 10s.</span></p>
   </header>
   <main>
-    <h2>Property comparison</h2>
-    <table class="cmp">
-      <tr><th>Property</th>
-          <th><span class="tag legit">Legit</span> {{ legit_origin }}</th>
-          <th><span class="tag spoof">Spoof</span> {{ spoof_origin }}</th></tr>
-      {% for label, a, b in comparison %}
-        <tr><td>{{ label }}</td><td>{{ a }}</td><td>{{ b }}</td></tr>
-      {% endfor %}
-    </table>
 
-    <div class="cols">
-      <div>
-        <h2><span class="tag legit">Legit</span> login events</h2>
-        {% if legit %}
-        <table>
-          <tr><th>Time (UTC)</th><th>Method</th><th>Email tried</th><th>Outcome</th></tr>
-          {% for e in legit %}
-          <tr>
-            <td>{{ e.ts }}</td>
-            <td><span class="tag {{ e.method|lower }}">{{ e.method }}</span></td>
-            <td>{{ e.email_tried or "—" }}</td>
-            <td class="{{ 'ok' if e.outcome == 'success' else '' }}">{{ e.outcome }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-        {% else %}
-        <p class="empty">No events yet. Try logging in on the legit site.</p>
-        {% endif %}
-        <p class="note">Email is shown for the demo; it is not secret. Passwords and
-           session cookies are never logged.</p>
+    <!-- 1. Headline numbers -->
+    <section>
+      <h2>At a glance</h2>
+      <div class="stats">
+        {% for s in stats %}
+        <div class="stat {{ s.tone }}">
+          <div class="num">{{ s.value }}</div>
+          <div class="lbl">{{ s.label }}</div>
+          <div class="note">{{ s.note }}</div>
+        </div>
+        {% endfor %}
       </div>
+    </section>
 
-      <div>
-        <h2><span class="tag spoof">Spoof</span> simulation events</h2>
-        {% if spoof %}
-        <table>
-          <tr><th>Time (UTC)</th><th>Method</th><th>Origin</th><th>Outcome</th></tr>
-          {% for e in spoof %}
-          <tr>
-            <td>{{ e.ts }}</td>
-            <td><span class="tag {{ e.method|lower }}">{{ e.method }}</span></td>
-            <td>{{ e.origin }}</td>
-            <td class="warn">{{ e.outcome }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-        {% else %}
-        <p class="empty">No events yet. Try the mock login on the spoof site.</p>
-        {% endif %}
-        <p class="note">Notice there is no "email tried" or "password" column here —
-           the spoof logger has no field for either.</p>
+    <!-- 2. The core contrast -->
+    <section>
+      <h2>Real site vs. look-alike</h2>
+      <table class="cmp">
+        <tr><th>&nbsp;</th>
+            <th><span class="tag legit">Real</span> {{ legit_origin }}</th>
+            <th><span class="tag spoof">Spoof</span> {{ spoof_origin }}</th></tr>
+        {% for label, a, b in comparison %}
+          <tr><td>{{ label }}</td><td class="legit">{{ a }}</td><td class="spoof">{{ b }}</td></tr>
+        {% endfor %}
+      </table>
+    </section>
+
+    <!-- 3. Live event feeds -->
+    <section>
+      <h2>Live events</h2>
+      <div class="feeds">
+        <div>
+          <p><span class="tag legit">Real</span> authentication log</p>
+          {% if legit %}
+          <table>
+            <tr><th>Time (UTC)</th><th>Method</th><th>Email</th><th>Outcome</th></tr>
+            {% for e in legit %}
+            <tr>
+              <td>{{ e.ts[11:19] }}</td>
+              <td><span class="tag {{ e.method|lower }}">{{ e.method }}</span></td>
+              <td>{{ e.email_tried or "—" }}</td>
+              <td class="{{ 'ok' if e.outcome == 'success' else '' }}">{{ e.outcome }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% else %}<p class="empty">No events yet — log in on the real site.</p>{% endif %}
+          <p class="feed-note">Shows the email tried (not secret). Passwords and session
+             cookies are never logged.</p>
+        </div>
+        <div>
+          <p><span class="tag spoof">Spoof</span> simulation log</p>
+          {% if spoof %}
+          <table>
+            <tr><th>Time (UTC)</th><th>Method</th><th>Outcome</th></tr>
+            {% for e in spoof %}
+            <tr>
+              <td>{{ e.ts[11:19] }}</td>
+              <td><span class="tag {{ e.method|lower }}">{{ e.method }}</span></td>
+              <td class="warn-t">{{ e.outcome }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          {% else %}<p class="empty">No events yet — try the spoof login.</p>{% endif %}
+          <p class="feed-note">No "email" or "password" column exists here — the spoof
+             logger has no field for either.</p>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- 4. Takeaway for the presenter -->
+    <section>
+      <h2>Takeaway</h2>
+      <div class="takeaway">
+        Both pages can look identical, but they are <strong>different origins</strong>.
+        The real site stores a one-way <strong>hash</strong> and issues a
+        <strong>session</strong>; the spoof validates nothing and keeps nothing. Every
+        defense that actually stops phishing — password managers, passkeys, and reading
+        the address bar — keys off the <strong>origin</strong>, not how the page looks.
+      </div>
+    </section>
+
   </main>
 </body>
 </html>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}About this demonstration{% endblock %}
+{% block content %}
+<section class="narrow about">
+  <h1>About this demonstration</h1>
+
+  <p>This site is a <strong>look-alike</strong> of an online game store, built for a
+     cybersecurity class. It is not the real store. The real store runs at a different
+     web address:</p>
+
+  <p class="origins">
+    <span class="o-real">Real store<br><code>{{ legit_origin }}</code></span>
+    <span class="o-fake">This look-alike<br><code>{{ origin }}</code></span>
+  </p>
+
+  <p>The two pages can look identical, but they are different websites. The address in
+     the browser's address bar — the <em>origin</em> — is what actually tells them
+     apart. Spoofed sites copy how a page looks; they cannot copy the real site's
+     address, and the defenses that matter are tied to that address:</p>
+
+  <ul>
+    <li>A password manager only offers to fill a saved login on the exact site where
+        you saved it, so it stays silent on a look-alike.</li>
+    <li>A passkey is bound to the real site's address and won't work on another.</li>
+    <li>HTTPS proves you are connected to whatever address is shown — not that the
+        address belongs to the real company.</li>
+  </ul>
+
+  <p class="muted">For the demonstration, this site stores nothing you type. The login
+     and signup forms record only that a submission happened and then reject it; no
+     email or password is saved.</p>
+
+  <a class="btn" href="{{ legit_origin }}">Go to the real store →</a>
+</section>
+{% endblock %}

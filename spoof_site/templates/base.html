@@ -7,14 +7,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <!-- Always-on educational notice. A real phishing page would never show this. -->
-  <div class="sim-banner">
-    🎓 EDUCATIONAL SIMULATION — This is a FAKE look-alike running on
-    <strong>{{ origin_label }}</strong>, built for a cybersecurity class. It stores
-    no passwords. The real store is <strong>{{ legit_origin }}</strong>.
+  <!-- Subtle, always-present educational notice (required for the demo; a real
+       phishing page would never carry one). Kept to a single quiet line. -->
+  <div class="sim-note">
+    Educational simulation — a look-alike of a real store, for a security class.
+    <a href="{{ url_for('about') }}">Learn more</a>
   </div>
-
-  <div class="origin-ribbon spoof">⚠ Look-alike site &middot; {{ origin_label }}</div>
 
   <header class="nav">
     <a class="brand" href="{{ url_for('index') }}">
@@ -22,8 +20,8 @@
     </a>
     <nav>
       <a href="{{ url_for('index') }}">Store</a>
-      <a href="#">GTA VI</a>
-      <a href="#">Cart</a>
+      <a href="{{ url_for('signup') }}">GTA VI</a>
+      <a href="{{ url_for('login') }}">Cart</a>
       <a href="{{ url_for('login') }}">Login</a>
       <a class="btn-sm" href="{{ url_for('signup') }}">Claim discount</a>
     </nav>
@@ -33,7 +31,8 @@
 
   <footer>
     <p>Educational simulation only. Not affiliated with any real company. No real
-       accounts, products, or payments.</p>
+       accounts, products, or payments. <a href="{{ url_for('about') }}">About this
+       demonstration</a>.</p>
   </footer>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>

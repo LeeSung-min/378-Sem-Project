@@ -1,11 +1,12 @@
 """
 Website A — PixelVault Games (LEGITIMATE store).
 
-Demonstrates real, secure authentication:
+Demonstrates real, secure authentication plus a working storefront:
   - registration + login/logout
   - passwords hashed with Werkzeug (never stored in plaintext)
   - server-side session via Flask's signed session cookie
   - a protected /account page
+  - a real, session-backed shopping cart (add / remove / clear)
   - CSRF protection on all POST forms
   - sensible session-cookie flags (HttpOnly, SameSite, and Secure when on HTTPS)
 
@@ -61,19 +62,52 @@ class AdaptiveSessionInterface(SecureCookieSessionInterface):
 
 app.session_interface = AdaptiveSessionInterface()
 
-# One fictional product. Artwork is original placeholder art (see static/).
-PRODUCT = {
-    "slug": "gta-vi",
-    "title": "GTA VI",
-    "price": "$69.99",
-    "tagline": "The most anticipated open-world game. (Demonstration listing only.)",
-    "description": (
-        "Return to Vice City in the next chapter of the series. This is a fictional "
-        "store listing created for a cybersecurity class demonstration. No real "
-        "product is sold and no payment is processed."
-    ),
-    "screens": ["Beachfront skyline", "Neon downtown", "Open highway"],
-}
+# ---------- product catalog ----------
+# A small fixed catalog. Artwork is original placeholder art (CSS gradients).
+# "GTA VI" appears only as a text title; every other title is fictional.
+CATALOG = [
+    {
+        "slug": "gta-vi", "title": "GTA VI", "price": 69.99, "art": 0,
+        "tagline": "The most anticipated open-world game. (Demonstration listing only.)",
+        "description": (
+            "Return to Vice City in the next chapter of the series. A fictional store "
+            "listing created for a cybersecurity class demonstration. No real product "
+            "is sold and no payment is processed."
+        ),
+        "screens": ["Beachfront skyline", "Neon downtown", "Open highway"],
+    },
+    {
+        "slug": "neon-drift", "title": "Neon Drift", "price": 49.99, "art": 1,
+        "tagline": "A synthwave racer through endless city nights.",
+        "description": "Drift neon-lit streets in this fictional arcade racer.",
+        "screens": ["Rain-slick straightaway", "Tunnel boost", "Rooftop finish"],
+    },
+    {
+        "slug": "starfall-tactics", "title": "Starfall Tactics", "price": 39.99, "art": 2,
+        "tagline": "Turn-based battles among dying stars.",
+        "description": "Command a fleet in this fictional tactics game.",
+        "screens": ["Nebula front", "Carrier deck", "Final jump"],
+    },
+    {
+        "slug": "harbor-quest", "title": "Harbor Quest", "price": 29.99, "art": 3,
+        "tagline": "A cozy seaside adventure of trade and tides.",
+        "description": "Build a harbor town in this fictional cozy sim.",
+        "screens": ["Morning docks", "Market row", "Lighthouse"],
+    },
+    {
+        "slug": "apex-arena", "title": "Apex Arena", "price": 59.99, "art": 0,
+        "tagline": "Fast, stylish, team-based combat.",
+        "description": "Compete in this fictional hero shooter.",
+        "screens": ["Spawn gate", "Mid control", "Overtime"],
+    },
+    {
+        "slug": "pixel-dungeon", "title": "Pixel Dungeon", "price": 19.99, "art": 1,
+        "tagline": "A roguelike with one more run in it.",
+        "description": "Descend procedurally generated floors in this fictional roguelike.",
+        "screens": ["Entry hall", "Trap room", "Boss gate"],
+    },
+]
+CATALOG_BY_SLUG = {g["slug"]: g for g in CATALOG}
 
 
 # ---------- database helpers ----------
@@ -101,6 +135,30 @@ def log_login(method, email_tried, outcome):
     db.commit()
 
 
+# ---------- cart helpers (session-backed) ----------
+def get_cart():
+    """Return the cart dict {slug: qty} from the session."""
+    return session.get("cart", {})
+
+
+def cart_items():
+    """Expand the cart into a list of line items with subtotals, plus the total."""
+    cart = get_cart()
+    items, total = [], 0.0
+    for slug, qty in cart.items():
+        game = CATALOG_BY_SLUG.get(slug)
+        if not game:
+            continue
+        subtotal = game["price"] * qty
+        total += subtotal
+        items.append({"game": game, "qty": qty, "subtotal": subtotal})
+    return items, total
+
+
+def cart_count():
+    return sum(get_cart().values())
+
+
 # ---------- CSRF protection ----------
 # A minimal per-session token. Every POST form includes it as a hidden field;
 # the server rejects any POST whose token doesn't match the session.
@@ -124,25 +182,58 @@ def inject_globals():
         "csrf_token": csrf_token,
         "current_user": session.get("user_email"),
         "origin_label": ORIGIN,
+        "cart_count": cart_count(),
     }
 
 
 # ---------- routes ----------
 @app.route("/")
 def index():
-    return render_template("index.html", product=PRODUCT)
+    return render_template("index.html", catalog=CATALOG, featured=CATALOG[0])
 
 
 @app.route("/product/<slug>")
 def product(slug):
-    if slug != PRODUCT["slug"]:
+    game = CATALOG_BY_SLUG.get(slug)
+    if not game:
         abort(404)
-    return render_template("product.html", product=PRODUCT)
+    return render_template("product.html", product=game)
 
 
 @app.route("/cart")
 def cart():
-    return render_template("cart.html", product=PRODUCT)
+    items, total = cart_items()
+    return render_template("cart.html", items=items, total=total)
+
+
+@app.route("/cart/add", methods=["POST"])
+def cart_add():
+    slug = request.form.get("slug", "")
+    if slug not in CATALOG_BY_SLUG:
+        abort(404)
+    cart = dict(get_cart())
+    cart[slug] = cart.get(slug, 0) + 1
+    session["cart"] = cart
+    flash(f"Added {CATALOG_BY_SLUG[slug]['title']} to your cart.", "ok")
+    return redirect(url_for("cart"))
+
+
+@app.route("/cart/remove", methods=["POST"])
+def cart_remove():
+    slug = request.form.get("slug", "")
+    cart = dict(get_cart())
+    if slug in cart:
+        del cart[slug]
+        session["cart"] = cart
+        flash("Item removed.", "ok")
+    return redirect(url_for("cart"))
+
+
+@app.route("/cart/clear", methods=["POST"])
+def cart_clear():
+    session["cart"] = {}
+    flash("Cart cleared.", "ok")
+    return redirect(url_for("cart"))
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -189,8 +280,11 @@ def login():
         # check_password_hash compares against the stored hash; the plaintext
         # password is never read from or written to the database.
         if user and check_password_hash(user["password_hash"], password):
+            # Preserve the cart across the session reset on login.
+            saved_cart = get_cart()
             session.clear()
             session["user_email"] = user["email"]
+            session["cart"] = saved_cart
             csrf_token()  # refresh token for the new session
             log_login("POST", email, "success")
             flash("Signed in successfully.", "ok")
@@ -209,7 +303,9 @@ def account():
     if not session.get("user_email"):
         flash("Please sign in to view your account.", "error")
         return redirect(url_for("login"))
-    return render_template("account.html", email=session["user_email"], product=PRODUCT)
+    items, total = cart_items()
+    return render_template("account.html", email=session["user_email"],
+                           items=items, total=total)
 
 
 @app.route("/logout", methods=["POST"])

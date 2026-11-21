@@ -3,18 +3,44 @@
 {% block content %}
 <section class="narrow">
   <h1>Your cart</h1>
-  <div class="cart-row">
-    <div class="art-thumb a0" aria-hidden="true"></div>
-    <div class="cart-item">
-      <h3>{{ product.title }}</h3>
-      <p class="muted">{{ product.price }}</p>
+
+  {% if items %}
+    {% for item in items %}
+    <div class="cart-row">
+      <div class="art-thumb a{{ item.game.art }}" aria-hidden="true"></div>
+      <div class="cart-item">
+        <h3><a href="{{ url_for('product', slug=item.game.slug) }}">{{ item.game.title }}</a></h3>
+        <p class="muted">${{ "%.2f"|format(item.game.price) }}
+          {% if item.qty > 1 %}&times; {{ item.qty }}{% endif %}</p>
+      </div>
+      <div class="cart-line-end">
+        <span class="subtotal">${{ "%.2f"|format(item.subtotal) }}</span>
+        <form method="post" action="{{ url_for('cart_remove') }}" class="inline">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <input type="hidden" name="slug" value="{{ item.game.slug }}">
+          <button class="link-btn danger" type="submit">Remove</button>
+        </form>
+      </div>
     </div>
-  </div>
-  <p class="total">Total: {{ product.price }} <span class="muted">(demonstration — no checkout)</span></p>
-  {% if current_user %}
-    <a class="btn" href="{{ url_for('account') }}">Go to account</a>
+    {% endfor %}
+
+    <p class="total">Total: ${{ "%.2f"|format(total) }}
+      <span class="muted">(demonstration — no real checkout)</span></p>
+
+    <div class="cart-actions">
+      {% if current_user %}
+        <a class="btn" href="{{ url_for('account') }}">Go to account</a>
+      {% else %}
+        <a class="btn" href="{{ url_for('login') }}">Log in to check out</a>
+      {% endif %}
+      <form method="post" action="{{ url_for('cart_clear') }}" class="inline">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <button class="btn-sm ghost" type="submit">Clear cart</button>
+      </form>
+    </div>
   {% else %}
-    <p>Please <a href="{{ url_for('login') }}">log in</a> to check out.</p>
+    <p class="muted">Your cart is empty.</p>
+    <a class="btn" href="{{ url_for('index') }}">Browse games</a>
   {% endif %}
 </section>
 {% endblock %}

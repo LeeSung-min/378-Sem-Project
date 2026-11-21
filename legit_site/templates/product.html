@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 {% block title %}{{ product.title }} — PixelVault Games{% endblock %}
 {% block content %}
+<p class="crumb"><a href="{{ url_for('index') }}">← Back to store</a></p>
 <section class="product">
-  <div class="art-cover large" aria-hidden="true"><span>{{ product.title }}</span></div>
+  <div class="art-cover large a{{ product.art }}" aria-hidden="true">
+    <span>{{ product.title }}</span>
+  </div>
   <div class="product-info">
     <h1>{{ product.title }}</h1>
-    <p class="price-big">{{ product.price }}</p>
+    <p class="price-big">${{ "%.2f"|format(product.price) }}</p>
     <p>{{ product.description }}</p>
     <h3>Screenshots</h3>
     <div class="shots">
@@ -13,8 +16,10 @@
         <div class="shot" aria-hidden="true"><span>{{ s }}</span></div>
       {% endfor %}
     </div>
-    <form method="get" action="{{ url_for('cart') }}">
-      <button class="btn" type="submit">Add to cart (demo)</button>
+    <form method="post" action="{{ url_for('cart_add') }}">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <input type="hidden" name="slug" value="{{ product.slug }}">
+      <button class="btn" type="submit">Add to cart</button>
     </form>
   </div>
 </section>

@@ -2,14 +2,16 @@
 {% block title %}Claim your discount — PixelVault Games{% endblock %}
 {% block content %}
 <section class="auth">
-  <div class="promo-pill">🔥 {{ product.deal_price }} launch price — ends soon</div>
+  <div class="promo-pill">{{ product.deal_price }} launch price — ends soon</div>
   <h1>Create your account</h1>
   <p class="muted">Sign up to claim the member-only price on {{ product.title }}.</p>
 
+  {% if error %}<div class="form-error">{{ error }}</div>{% endif %}
+
   <!--
-    Same point as the login form: this POSTs to THIS origin (127.0.0.1:5001), not
-    the real store, and the server discards whatever is typed before showing the
-    educational reveal.
+    Same as the login form: this POSTs to THIS origin (127.0.0.1:5001), not the real
+    store. The server discards whatever is typed, logs only a non-sensitive event,
+    and returns a generic failure. No account is ever created.
   -->
   <form method="post" action="{{ url_for('signup') }}" autocomplete="on">
     <label>Email
@@ -23,7 +25,5 @@
   </form>
 
   <p>Already have an account? <a href="{{ url_for('login') }}">Sign in</a>.</p>
-  <p class="sim-inline">For the demo you can type the designated test value
-     <code>{{ demo_email }}</code> and any password — nothing you enter is stored.</p>
 </section>
 {% endblock %}

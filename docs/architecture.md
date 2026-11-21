@@ -59,8 +59,9 @@ concerned.
 2. User submits: `POST /login`.
 3. The handler reads the fields into local variables and **immediately discards the
    password** (`del`). Nothing is written anywhere with it.
-4. It records a non-sensitive event — `ts, origin, method, outcome` — and redirects
-   to `/reveal`, which explains what happened.
+4. It records a non-sensitive event — `ts, origin, method, outcome` — and re-renders
+   the form with an "Invalid email or password." error. A separate `/about` page
+   explains the spoof-vs-real difference in plain terms.
 
 ## Why three ports instead of one app
 
