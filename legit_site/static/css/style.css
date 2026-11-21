@@ -88,6 +88,16 @@ main { max-width: 1040px; margin: 0 auto; padding: 24px 20px 64px; }
 .art-thumb.a2, .art-cover.a2 { background: linear-gradient(135deg, #2a5a7a, #0f7f4a); }
 .art-thumb.a3, .art-cover.a3 { background: linear-gradient(135deg, #7a4a2a, #7a2a4a); }
 
+/* Real cover images */
+img.cover { display: block; width: 100%; object-fit: cover; border-radius: var(--radius);
+  background: #1f2330; }
+.cover.portrait { aspect-ratio: 3/4; }
+.cover.landscape { aspect-ratio: 4/3; }
+.hero-art-link { display: flex; justify-content: center; }
+.hero .cover.portrait { max-width: 340px; }
+.product-cover { max-width: 320px; }
+.cart-thumb { width: 110px; flex: none; }
+
 .section-title { margin: 30px 0 14px; }
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .card { background: var(--panel); border-radius: var(--radius); overflow: hidden;

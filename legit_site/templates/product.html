@@ -3,12 +3,12 @@
 {% block content %}
 <p class="crumb"><a href="{{ url_for('index') }}">← Back to store</a></p>
 <section class="product">
-  <div class="art-cover large a{{ product.art }}" aria-hidden="true">
-    <span>{{ product.title }}</span>
-  </div>
+  <img class="cover portrait product-cover"
+       src="{{ url_for('static', filename='img/' ~ product.img) }}"
+       alt="{{ product.title }} cover">
   <div class="product-info">
     <h1>{{ product.title }}</h1>
-    <p class="price-big">${{ "%.2f"|format(product.price) }}</p>
+    <p class="price-big">{% if product.price > 0 %}${{ "%.2f"|format(product.price) }}{% else %}Free{% endif %}</p>
     <p>{{ product.description }}</p>
     <h3>Screenshots</h3>
     <div class="shots">

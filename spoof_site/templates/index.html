@@ -15,13 +15,19 @@
        launch-week price.</p>
     <a class="btn" href="{{ url_for('signup') }}">Create account &amp; claim deal</a>
   </div>
-  <div class="hero-art art-cover" aria-hidden="true"><span>{{ product.title }}</span></div>
+  <a href="{{ url_for('signup') }}" class="hero-art-link">
+    <img class="cover portrait" src="{{ url_for('static', filename='img/gta-vi.png') }}"
+         alt="{{ product.title }} cover">
+  </a>
 </section>
 
 <h2 class="section-title">Hot deals</h2>
 <div class="grid">
   <article class="card deal-card">
-    <div class="art-thumb a0" aria-hidden="true"></div>
+    <a href="{{ url_for('signup') }}" class="card-art">
+      <img class="cover landscape" src="{{ url_for('static', filename='img/gta-vi.png') }}"
+           alt="{{ product.title }} cover">
+    </a>
     <div class="card-body">
       <h3>{{ product.title }}</h3>
       <p><span class="old">{{ product.price }}</span>
@@ -30,13 +36,16 @@
     </div>
   </article>
   {% for game in [
-      {"t":"Neon Drift","p":"$49.99","a":1},
-      {"t":"Starfall Tactics","p":"$39.99","a":2},
-      {"t":"Harbor Quest","p":"$29.99","a":3},
-      {"t":"Apex Arena","p":"$59.99","a":0},
-      {"t":"Pixel Dungeon","p":"$19.99","a":1}] %}
+      {"t":"Fortnite","p":"Free","img":"fortnite.jpg"},
+      {"t":"Minecraft","p":"$29.99","img":"minecraft.jpg"},
+      {"t":"Pokémon: Let's Go, Pikachu!","p":"$59.99","img":"pokemon.jpg"},
+      {"t":"VALORANT","p":"Free","img":"valorant.jpg"},
+      {"t":"The Legend of Zelda: Ocarina of Time","p":"$59.99","img":"zelda.jpg"}] %}
   <article class="card">
-    <div class="art-thumb a{{ game.a }}" aria-hidden="true"></div>
+    <a href="{{ url_for('login') }}" class="card-art">
+      <img class="cover landscape" src="{{ url_for('static', filename='img/' ~ game.img) }}"
+           alt="{{ game.t }} cover">
+    </a>
     <div class="card-body">
       <h3>{{ game.t }}</h3>
       <p class="muted">{{ game.p }}</p>

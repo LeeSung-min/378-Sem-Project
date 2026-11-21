@@ -7,10 +7,12 @@
   {% if items %}
     {% for item in items %}
     <div class="cart-row">
-      <div class="art-thumb a{{ item.game.art }}" aria-hidden="true"></div>
+      <img class="cover landscape cart-thumb"
+           src="{{ url_for('static', filename='img/' ~ item.game.img) }}"
+           alt="{{ item.game.title }} cover">
       <div class="cart-item">
         <h3><a href="{{ url_for('product', slug=item.game.slug) }}">{{ item.game.title }}</a></h3>
-        <p class="muted">${{ "%.2f"|format(item.game.price) }}
+        <p class="muted">{% if item.game.price > 0 %}${{ "%.2f"|format(item.game.price) }}{% else %}Free{% endif %}
           {% if item.qty > 1 %}&times; {{ item.qty }}{% endif %}</p>
       </div>
       <div class="cart-line-end">

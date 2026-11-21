@@ -63,48 +63,53 @@ class AdaptiveSessionInterface(SecureCookieSessionInterface):
 app.session_interface = AdaptiveSessionInterface()
 
 # ---------- product catalog ----------
-# A small fixed catalog. Artwork is original placeholder art (CSS gradients).
-# "GTA VI" appears only as a text title; every other title is fictional.
+# A small fixed catalog. Cover images are stored under static/img/.
+# (Store brand "PixelVault Games" is fictional; the game titles/art are used as
+# example product listings for a class demonstration.)
 CATALOG = [
     {
-        "slug": "gta-vi", "title": "GTA VI", "price": 69.99, "art": 0,
-        "tagline": "The most anticipated open-world game. (Demonstration listing only.)",
-        "description": (
-            "Return to Vice City in the next chapter of the series. A fictional store "
-            "listing created for a cybersecurity class demonstration. No real product "
-            "is sold and no payment is processed."
-        ),
+        "slug": "gta-vi", "title": "GTA VI", "price": 69.99, "img": "gta-vi.png",
+        "tagline": "The most anticipated open-world game returns to Vice City.",
+        "description": "The next chapter in the open-world series. Example product "
+                       "listing for a class demonstration — no real sale is processed.",
         "screens": ["Beachfront skyline", "Neon downtown", "Open highway"],
     },
     {
-        "slug": "neon-drift", "title": "Neon Drift", "price": 49.99, "art": 1,
-        "tagline": "A synthwave racer through endless city nights.",
-        "description": "Drift neon-lit streets in this fictional arcade racer.",
-        "screens": ["Rain-slick straightaway", "Tunnel boost", "Rooftop finish"],
+        "slug": "fortnite", "title": "Fortnite", "price": 0.00, "img": "fortnite.jpg",
+        "tagline": "Drop in, build, and battle to be the last one standing.",
+        "description": "Free-to-play battle royale. Example product listing for a class "
+                       "demonstration.",
+        "screens": ["The drop", "Final circle", "Victory"],
     },
     {
-        "slug": "starfall-tactics", "title": "Starfall Tactics", "price": 39.99, "art": 2,
-        "tagline": "Turn-based battles among dying stars.",
-        "description": "Command a fleet in this fictional tactics game.",
-        "screens": ["Nebula front", "Carrier deck", "Final jump"],
+        "slug": "minecraft", "title": "Minecraft", "price": 29.99, "img": "minecraft.jpg",
+        "tagline": "Build, explore, and survive in an infinite blocky world.",
+        "description": "Sandbox survival and creativity. Example product listing for a "
+                       "class demonstration.",
+        "screens": ["First night", "Cherry grove", "The mines"],
     },
     {
-        "slug": "harbor-quest", "title": "Harbor Quest", "price": 29.99, "art": 3,
-        "tagline": "A cozy seaside adventure of trade and tides.",
-        "description": "Build a harbor town in this fictional cozy sim.",
-        "screens": ["Morning docks", "Market row", "Lighthouse"],
+        "slug": "pokemon-lets-go-pikachu", "title": "Pokémon: Let's Go, Pikachu!",
+        "price": 59.99, "img": "pokemon.jpg",
+        "tagline": "Catch, train, and travel the Kanto region with Pikachu.",
+        "description": "Classic creature-collecting adventure. Example product listing "
+                       "for a class demonstration.",
+        "screens": ["Pallet Town", "Catching", "Gym battle"],
     },
     {
-        "slug": "apex-arena", "title": "Apex Arena", "price": 59.99, "art": 0,
-        "tagline": "Fast, stylish, team-based combat.",
-        "description": "Compete in this fictional hero shooter.",
-        "screens": ["Spawn gate", "Mid control", "Overtime"],
+        "slug": "valorant", "title": "VALORANT", "price": 0.00, "img": "valorant.jpg",
+        "tagline": "A 5v5 tactical shooter where precision meets abilities.",
+        "description": "Free-to-play tactical shooter. Example product listing for a "
+                       "class demonstration.",
+        "screens": ["Spike plant", "Clutch round", "Ace"],
     },
     {
-        "slug": "pixel-dungeon", "title": "Pixel Dungeon", "price": 19.99, "art": 1,
-        "tagline": "A roguelike with one more run in it.",
-        "description": "Descend procedurally generated floors in this fictional roguelike.",
-        "screens": ["Entry hall", "Trap room", "Boss gate"],
+        "slug": "zelda-ocarina-of-time", "title": "The Legend of Zelda: Ocarina of Time",
+        "price": 59.99, "img": "zelda.jpg",
+        "tagline": "A timeless adventure through Hyrule, forest to castle.",
+        "description": "Classic action-adventure. Example product listing for a class "
+                       "demonstration.",
+        "screens": ["Kokiri Forest", "Hyrule Field", "Temple of Time"],
     },
 ]
 CATALOG_BY_SLUG = {g["slug"]: g for g in CATALOG}

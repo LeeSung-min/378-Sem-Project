@@ -2,14 +2,15 @@
 {% block content %}
 <section class="hero">
   <div class="hero-text">
-    <p class="eyebrow">Now available for pre-order</p>
+    <p class="eyebrow">Now available</p>
     <h1>{{ featured.title }}</h1>
     <p class="lead">{{ featured.tagline }}</p>
     <a class="btn" href="{{ url_for('product', slug=featured.slug) }}">View game</a>
   </div>
-  <div class="hero-art art-cover a{{ featured.art }}" aria-hidden="true">
-    <span>{{ featured.title }}</span>
-  </div>
+  <a href="{{ url_for('product', slug=featured.slug) }}" class="hero-art-link">
+    <img class="cover portrait" src="{{ url_for('static', filename='img/' ~ featured.img) }}"
+         alt="{{ featured.title }} cover">
+  </a>
 </section>
 
 <h2 class="section-title">Browse games</h2>
@@ -17,11 +18,12 @@
   {% for game in catalog %}
   <article class="card">
     <a href="{{ url_for('product', slug=game.slug) }}" class="card-art">
-      <div class="art-thumb a{{ game.art }}" aria-hidden="true"></div>
+      <img class="cover landscape" src="{{ url_for('static', filename='img/' ~ game.img) }}"
+           alt="{{ game.title }} cover">
     </a>
     <div class="card-body">
       <h3><a href="{{ url_for('product', slug=game.slug) }}">{{ game.title }}</a></h3>
-      <p class="muted">${{ "%.2f"|format(game.price) }}</p>
+      <p class="muted">{% if game.price > 0 %}${{ "%.2f"|format(game.price) }}{% else %}Free{% endif %}</p>
       <div class="card-actions">
         <a class="btn-sm ghost" href="{{ url_for('product', slug=game.slug) }}">Details</a>
         <form method="post" action="{{ url_for('cart_add') }}" class="inline">

@@ -144,3 +144,12 @@ footer { border-top: 1px solid #262a38; color: var(--muted); font-size: 13px;
   line-height: 1.8; }
 .about .o-real { background: #11271c; border: 1px solid #1f6f47; }
 .about .o-fake { background: #2a1119; border: 1px solid #7a2a44; }
+
+/* Real cover images */
+img.cover { display:block; width:100%; object-fit:cover; border-radius:var(--radius);
+  background:#1f2330; }
+.cover.portrait { aspect-ratio:3/4; }
+.cover.landscape { aspect-ratio:4/3; }
+.card-art { display:block; }
+.hero-art-link { display:flex; justify-content:center; }
+.hero .cover.portrait { max-width:340px; }
