@@ -12,12 +12,19 @@ Run:  python dashboard/app.py   ->  http://127.0.0.1:5002
 """
 import os
 import sqlite3
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from datetime import datetime, timezone, timedelta
 
 from flask import Flask, render_template
 
-PACIFIC = ZoneInfo("America/Los_Angeles")
+# Pacific timezone. On Linux/macOS the IANA database is available and gives
+# full daylight-saving handling. Windows Python ships no tz database, so if the
+# lookup fails (and the `tzdata` package isn't installed) we fall back to a fixed
+# Pacific Standard Time offset — correct in winter; install `tzdata` for DST.
+try:
+    from zoneinfo import ZoneInfo
+    PACIFIC = ZoneInfo("America/Los_Angeles")
+except Exception:
+    PACIFIC = timezone(timedelta(hours=-8), "PST")
 
 
 def to_pacific(ts):
