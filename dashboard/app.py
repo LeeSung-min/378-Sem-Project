@@ -12,8 +12,21 @@ Run:  python dashboard/app.py   ->  http://127.0.0.1:5002
 """
 import os
 import sqlite3
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from flask import Flask, render_template
+
+PACIFIC = ZoneInfo("America/Los_Angeles")
+
+
+def to_pacific(ts):
+    """Convert a stored UTC ISO timestamp to a Pacific-time HH:MM:SS string.
+    Falls back to the raw time slice if parsing fails."""
+    try:
+        return datetime.fromisoformat(ts).astimezone(PACIFIC).strftime("%H:%M:%S")
+    except (ValueError, TypeError):
+        return (ts or "")[11:19]
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -55,6 +68,12 @@ def read_spoof_events():
 def index():
     legit = read_legit_events()
     spoof = read_spoof_events()
+
+    # Display timestamps in Pacific time (DST handled automatically).
+    for e in legit:
+        e["ts_disp"] = to_pacific(e["ts"])
+    for e in spoof:
+        e["ts_disp"] = to_pacific(e["ts"])
 
     # Headline numbers for the presenter to point at.
     legit_success = sum(1 for e in legit if e["outcome"] == "success")

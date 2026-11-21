@@ -107,10 +107,10 @@
           <p><span class="tag legit">Real</span> authentication log</p>
           {% if legit %}
           <table>
-            <tr><th>Time (UTC)</th><th>Method</th><th>Email</th><th>Outcome</th></tr>
+            <tr><th>Time (PT)</th><th>Method</th><th>Email</th><th>Outcome</th></tr>
             {% for e in legit %}
             <tr>
-              <td>{{ e.ts[11:19] }}</td>
+              <td>{{ e.ts_disp }}</td>
               <td><span class="tag {{ e.method|lower }}">{{ e.method }}</span></td>
               <td>{{ e.email_tried or "—" }}</td>
               <td class="{{ 'ok' if e.outcome == 'success' else '' }}">{{ e.outcome }}</td>
@@ -125,10 +125,10 @@
           <p><span class="tag spoof">Spoof</span> simulation log</p>
           {% if spoof %}
           <table>
-            <tr><th>Time (UTC)</th><th>Method</th><th>Outcome</th></tr>
+            <tr><th>Time (PT)</th><th>Method</th><th>Outcome</th></tr>
             {% for e in spoof %}
             <tr>
-              <td>{{ e.ts[11:19] }}</td>
+              <td>{{ e.ts_disp }}</td>
               <td><span class="tag {{ e.method|lower }}">{{ e.method }}</span></td>
               <td class="warn-t">{{ e.outcome }}</td>
             </tr>
