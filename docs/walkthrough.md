@@ -26,7 +26,16 @@ servers running and the dashboard open in a second tab before you start.
    phishing page would behave exactly like this dead end — the difference is that a
    real one keeps what you typed. Ours discards it and logs only that a submission
    happened." (The **About this demonstration** link explains the spoof-vs-real point.)
-5. Back on the **dashboard**, show the new row in the spoof log — and point out there
+5. **Proof-of-capture (DevTools) — the key beat.** Before submitting, press **F12** →
+   **Network** tab → check **Preserve log**. Type a *throwaway* password (e.g.
+   `Hunter2-demo`) and submit. Click the `login` request and show:
+   - **Headers → Request URL:** `http://127.0.0.1:5001/login` — the fake origin.
+   - **Payload (Form Data):** the password, in plain text.
+   Say: "I never typed this into the real store, but the fake site received it anyway.
+   That is the capture — a real phishing page would just keep it. We don't." (Use a
+   fake password; DevTools shows it in the clear, which is also the point about plain
+   HTTP.) See `docs/devtools_guide.md` for the full version.
+6. Back on the **dashboard**, show the new row in the spoof log — and point out there
    is literally no column for an email or a password.
 
 ## Part 3 — The defenses that actually work (≈3 min)

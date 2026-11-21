@@ -24,14 +24,29 @@ GET/POST work, how Flask receives form submissions).
 5. **Response Cookies / Application tab → Cookies:** show the `session` cookie. Note
    it is marked **HttpOnly** (JavaScript can't read it) and **SameSite=Lax**.
 
-## Watch the spoof mock login (POST)
+## Watch the spoof mock login (POST) — the "proof of capture" beat
 
-1. Switch to `http://127.0.0.1:5001`, submit the mock login.
-2. Find the `login` request. Note the **Request URL host/port is `127.0.0.1:5001`** —
-   a different origin from the real store. This is the single most important thing to
-   point at.
-3. The response renders the same form again with an "Invalid email or password."
+This is the strongest live moment: show the audience the password they typed
+arriving at the attacker's origin, without the project storing anything.
+
+1. On `http://127.0.0.1:5001`, with the Network tab recording, type a **throwaway**
+   password (e.g. `Hunter2-demo`) into the spoof login and submit. Never use a real
+   password — DevTools shows it in the clear.
+2. Click the `login` request and show two panels:
+   - **Headers → Request URL:** `http://127.0.0.1:5001/login` — the **fake** origin,
+     not `:5000`. This is the single most important thing to point at.
+   - **Payload (Form Data):** `email` and `password` are right there in plain text.
+     Point at the password field.
+3. The line to say: *"I never typed this into the real store, but the fake site
+   received it anyway. That is exactly what a phishing page captures — the only
+   difference is that a real one keeps it. Ours discards it and logs nothing but
+   'a submission happened.'"*
+4. The response renders the same form again with an "Invalid email or password."
    error (HTTP 200). No session cookie is set, because nothing authenticated.
+
+Why this beats actually storing credentials: the POST body *is* the capture. You
+prove the threat with real evidence and reproduce none of the harm — a strong
+data-minimization point for the Q&A.
 
 ## Compare origins quickly
 
