@@ -18,7 +18,8 @@ servers running and the dashboard open in a second tab before you start.
 ## Part 2 — The spoof (≈3 min)
 
 1. Open `http://127.0.0.1:5001`. It looks like the same store. The only tell is the
-   quiet one-line notice at the very top (and the address bar).
+   address bar — the origin is `:5001`, not `:5000`. (A small "About this
+   demonstration" link sits in the footer for disclosure.)
 2. Point out the **social-engineering** elements: the countdown timer, the "flash
    sale" price, the popup. Say: "These exist to rush you past your normal checks."
 3. Click **Claim discount** → the signup page. Type any email and password, submit.
