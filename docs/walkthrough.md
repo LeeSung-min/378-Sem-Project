@@ -49,7 +49,7 @@ This is the strongest part. Do it live.
    That silence is a warning sign a human can be trained to notice."
 2. **The address bar.** Put the two tabs side by side. Same look, different origin.
 3. **Hashing.** Open `legit_site/pixelvault.db` (or show a screenshot). The `users`
-   table stores a `pbkdf2:sha256...` hash, not the password. Say: "Even if this DB
+   table stores a `scrypt:32768:8:1$...` hash, not the password. Say: "Even if this DB
    leaked, the passwords aren't in it."
 4. **Passkeys (talking point).** Explain that a passkey/WebAuthn credential is bound
    to the real origin by the browser, so on `:5001` it produces no valid signature —

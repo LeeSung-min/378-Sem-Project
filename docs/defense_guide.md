@@ -129,16 +129,16 @@ log.**
 - **Hashing** runs the password through a one-way function. You can compute the hash
   from the password, but you **cannot reverse** the hash back to the password.
 - At signup we call `generate_password_hash(password)` (Werkzeug). It produces a
-  string like `pbkdf2:sha256:600000$abc123$def456...` which encodes: the algorithm
-  (**PBKDF2** over **SHA-256**), the **iteration count**, a random **salt**, and the
-  resulting hash.
+  string like `scrypt:32768:8:1$abc123$def456...` which encodes: the algorithm
+  (**scrypt**, Werkzeug 3.x's default), its **cost settings** (N=32768, r=8, p=1), a
+  random **salt**, and the resulting hash.
 - At login we call `check_password_hash(stored, typed)`. It pulls the salt and
   settings out of the stored string, re-hashes what you typed the same way, and
   compares. Match → correct password.
 - **Salt** = random bytes mixed in per password. It means two users with the same
   password get different hashes, and it defeats precomputed "rainbow table" attacks.
-- **Iterations** (hundreds of thousands) make each guess slow, so brute-forcing the
-  hashes is expensive.
+- **Cost settings** make each guess slow, and scrypt is also **memory-hard** (each
+  guess needs a lot of RAM), so brute-forcing the hashes on GPUs is expensive.
 
 > **Hashing vs. encryption** (a classic question): Encryption is *two-way* — with the
 > key you can decrypt back to the original. Hashing is *one-way* — there's no key and
@@ -271,9 +271,10 @@ log.**
   error. Nothing is stored or authenticated.
 
 ### B. Design ("why did you… / why not…")
-- **"Why PBKDF2 and not just SHA-256?"** → A plain fast hash is brute-forceable.
-  PBKDF2 adds a salt and many iterations to make each guess slow and defeat rainbow
-  tables.
+- **"Why scrypt and not just SHA-256?"** → A plain fast hash is brute-forceable.
+  scrypt adds a salt and is deliberately slow and memory-hard, so each guess is
+  expensive and rainbow tables don't work. (Older Werkzeug versions used PBKDF2;
+  3.x defaults to scrypt.)
 - **"Why store a hash and not encrypt the password?"** → You never need to recover a
   password, only verify it; one-way hashing means a breach doesn't reveal passwords.
 - **"Why SameSite/HttpOnly on the cookie?"** → HttpOnly blocks JS cookie theft (XSS);

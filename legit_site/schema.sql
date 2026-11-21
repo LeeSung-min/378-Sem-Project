@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     email         TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,      -- Werkzeug pbkdf2 hash, not the password
+    password_hash TEXT NOT NULL,      -- Werkzeug scrypt hash, not the password
     created_at    TEXT NOT NULL
 );
 

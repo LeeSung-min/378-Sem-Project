@@ -2,7 +2,7 @@
 
 **Q: Where are passwords stored, and in what form?**
 On the legit site, in `pixelvault.db`, table `users`, column `password_hash`. It's a
-Werkzeug `pbkdf2:sha256` salted hash — a one-way function. We never store or log the
+Werkzeug salted `scrypt` hash (Werkzeug 3.x's default) — a one-way function. We never store or log the
 plaintext. The spoof site stores no passwords at all; its event logger has no column
 for one.
 
